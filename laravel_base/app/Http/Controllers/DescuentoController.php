@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Descuento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DescuentoController extends Controller
 {
@@ -25,7 +26,8 @@ class DescuentoController extends Controller
      */
     public function create()
     {
-        return view("descuentos.create");
+        $descuentos = new Descuento();
+        return view("descuentos.create",compact('descuentos'));
     }
 
     /**
@@ -36,9 +38,10 @@ class DescuentoController extends Controller
      */
     public function store(Request $request)
     {
-        Descuento::create([
-           "desc_desc"=>$request->desc_desc
-        ]);
+        //Descuento::create([
+          // "desc_desc"=>$request->desc_desc
+        //]);
+        $descuentos = Descuento::create($request->all());
         return redirect()->route("descuentos.index");
     }
 
@@ -59,9 +62,11 @@ class DescuentoController extends Controller
      * @param  \App\Models\Descuento  $descuento
      * @return \Illuminate\Http\Response
      */
-    public function edit(Descuento $descuento)
+    public function edit($id)
     {
         //
+        $descuentos = Descuento::find($id);
+        return view('descuentos.edit',compact('descuentos'));
     }
 
     /**
@@ -71,9 +76,18 @@ class DescuentoController extends Controller
      * @param  \App\Models\Descuento  $descuento
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Descuento $descuento)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'desc_desc' => 'required',
+            'porcentaje' => 'required'
+        ]);
+        $descuentos = Descuento::find($id);
+        $descuentos-> desc_desc = $request->input('desc_desc');
+        $descuentos-> porcentaje = $request->input('porcentaje');
+        $descuentos->save();
+
+        return redirect()->route('ejes.index');
     }
 
     /**
@@ -82,8 +96,10 @@ class DescuentoController extends Controller
      * @param  \App\Models\Descuento  $descuento
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Descuento $descuento)
+    public function destroy($id)
     {
-        $descuento->delete();
+        //$descuento->delete();
+        DB::table("descuentos")->where('id_descuento',$id)->delete();
+        return redirect()->route('descuentos.index');
     }
 }

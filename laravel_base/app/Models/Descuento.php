@@ -10,7 +10,11 @@ class Descuento extends Model
 {
     use HasFactory;
     //use SoftDeletes;
-    protected $table="descuentos";
-    protected $primaryKey="id_descuento";
-    protected $fillable=["desc_desc,porcentaje"];
+    //protected $table="descuentos";
+    //protected $primaryKey="id_descuento";
+    //protected $fillable=["desc_desc,porcentaje"];
+
+    protected $fillable = ['id', 'desc_desc', 'porcentaje'];
+    protected $primaryKey = 'id_descuento';
+    public $incrementing = false;
 }
